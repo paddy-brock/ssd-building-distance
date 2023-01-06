@@ -9,9 +9,6 @@ library(sf)
 library(tidyr)
 library(tmap)
 
-
-vvvvv
-
 # Read in the UNHCR layers for South Sudan including settlement boundaries
 
 # Read in SSD Google Open Buildings layer
