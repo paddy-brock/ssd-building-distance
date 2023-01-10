@@ -6,39 +6,45 @@ library('sf')
 library('tidyr')
 library(tmap)
 library(rgeos)
+library(dplyr)
 
-# Read in SSD Google Open Buildings layer, Re-format (inc, removing Torit and Magwi)
+# SSD Google Open Buildings data, re-format
 ssd_gob <- read.csv("building layer export.csv",T)[,1:7]
 ssd_gob$OBJECTID <- as.factor(ssd_gob$OBJECTID)
 ssd_gob$date <- ym(ssd_gob$last_detection_date)
+
+# Remove Magwi and Torit
 ssd_gob2 <- subset(ssd_gob,ssd_gob$latitude>7)
 gob <-na.omit(ssd_gob2)
 
-# Project the GOB layer and make spatial object
+# Project the GOB data as spatial object
 sp_gob <- st_as_sf(gob,coords=c("longitude","latitude")) %>% 
   st_set_crs(4326) %>%  st_transform(20135) 
 
-# check
-tmap_mode("view")
- tm_basemap("OpenStreetMap") +
-  tm_shape(sp_gob) + tm_dots(col = "black")
+# Check
+#tmap_mode("view")
+# tm_basemap("OpenStreetMap") +
+#  tm_shape(sp_gob) + tm_dots(col = "black")
 
-# UNHCR camp boundaries, re-project to match Google Open Buildings
+# UNHCR camp perimeters, project to match Google Open Buildings
 per <- st_read("ssd perimeters.shp")
 st_crs(per)
-sp_per <- per %>% st_transform(20135) 
+sp_per1 <- per %>% st_transform(20135)
 
-# Tag building points and in/out of perimeters (including names when inside)
+# Remove Benitu POC IDP settlement
+sp_per <- subset(sp_per1,sp_per1$name!="Bentiu POC")
+
+# Tag buildings as in or out of perimeters (including identifying which when inside)
 in.p <- st_join(sp_gob,sp_per)
 sp_gob$inside.per <- in.p$name
 sp_gob$inside.per <- ifelse((is.na(sp_gob$inside.per)==T), "outside",sp_gob$inside.per)
 
-# check
-table(sp_gob$inside.per)
- tm_basemap("OpenStreetMap") +
-  tm_shape(sp_gob) + tm_dots(col = "inside.per", palette=rainbow(length(unique(sp_gob$inside.per)),alpha=0.5))
+# Check
+#table(sp_gob$inside.per)
+# tm_basemap("OpenStreetMap") +
+#  tm_shape(sp_gob) + tm_dots(col = "inside.per", palette=rainbow(length(unique(sp_gob$inside.per)),alpha=0.5))
 
-# For those outside, distance to nearest perimeter
+# For those outside, distance to nearest perimeter, and identify which
 sp_gob_out <- subset(sp_gob, is.na(sp_gob$inside.per)==T)
 d.mat <- st_distance(sp_gob, sp_per)
 data.frame(d.mat[,1],sp_gob$inside.per)
@@ -51,45 +57,59 @@ for (i in 1:length(d.mat[,1])){
   sp_gob$min_d_sett[i] <- sett.names[which(d.mat[i,]==min(d.mat[i,]))]
 }
 
-# check
-tmap_mode("view")
- tm_basemap("OpenStreetMap") +
-  tm_shape(sp_gob) + tm_dots(col = "min_d_sett", palette=rainbow(length(unique(sp_gob$min_d_sett)),alpha=0.5))
- 
+# Check
+#tmap_mode("view")
+# tm_basemap("OpenStreetMap") +
+#  tm_shape(sp_gob) + tm_dots(col = "min_d_sett", palette=rainbow(length(unique(sp_gob$min_d_sett)),alpha=0.5))
 
+# Minimum distance distribution
+#par(mfrow=c(2,2))
+#hist(sp_gob$min_d,main ="All",xlab="dist to nearest refugee settlement (m)")
+#hist(subset(sp_gob,sp_gob$min_d>0)$min_d,main=">0m",xlab="dist to nearest refugee settlement (m)")
+#hist(subset(sp_gob,sp_gob$min_d>1000)$min_d,main=">1000m",xlab="dist to nearest refugee settlement (m)") 
+#hist(subset(sp_gob,sp_gob$min_d>10000)$min_d,main=">10000m",xlab="dist to nearest refugee settlement (m)") 
 
-# st_nearest...
-# st_nearest_feature() - test this with point inside polygon to see if get negative distance
-# if this doesn'
+# Buildings identified inside these refugee settlements
+table(sp_gob$inside.per)
 
+# Buildings outside these found to be nearest to these refugee settlements
+table(sp_gob$min_d_sett)
 
-# Camp proximity
-# Calculate distance of each building to nearest camp (and tag by camp)
-# Centroid and nearest edge
- 
-# Find centroid of polygon (sf... st_centroid)
+# Estimated building area could be helpful at extremes
+#par(mfrow=c(2,2))
+#hist(sp_gob$area_in_meters,main ="All",xlab="Area (m)")
+#hist(subset(sp_gob,sp_gob$area_in_meters<1000)$area_in_meters,main ="<1000",xlab="Area (m)")
+#hist(subset(sp_gob,sp_gob$area_in_meters<100)$area_in_meters,main ="<100",xlab="Area (m)")
+#hist(subset(sp_gob,sp_gob$area_in_meters<50)$area_in_meters,main ="<50",xlab="Area (m)")
 
-# Measure distance to nearest polygon edge  (sf st_nearest or st_distance)
+# Suggest tagging those greater than 44 and smaller than 8, not to exclude, but perhaps to prioritize for visual checking
+# This would highlight 0.05 and 0.95 percentiles
+q05 <- quantile(sp_gob$area_in_meters, probs = 0.05)[[1]]
+q95 <- quantile(sp_gob$area_in_meters, probs = 0.95)[[1]]
 
-# Calculate distance to all other camp centroids
-# Calculate a proxy indicator of distance to all camps, e.g. proportion of 1st to 2nd/3rd/4th/5th distance difference of the 1st distance - split into 1/2 and 1/2345
+sp_gob$building_size_percentile <- NA
 
+for(i in 1:length(sp_gob$area_in_meters)){
+  sp_gob$building_size_percentile[i] <-   ifelse(sp_gob$area_in_meters[i]<q05, "small",
+                                                 ifelse(sp_gob$area_in_meters[i]>q95, "large",
+                                                 "medium"))
+}
 
-# Calculate other features?
-# e.g. building density within buffer
-# e.g. distance to nearest path/road, e.g. WFP HDX data
-# e.g. distance to service locations, e.g. UNHCR borehole data?
+boxplot(log(sp_gob$area_in_meters)~sp_gob$building_size_percentile)
 
-# Final processing: add a flag using any of these features that could reliable be used (based on testing data) to exclude buildings from sample set
+# Google Buildings confidence measure doesn't look useful in this context, based on some random sample visual inspection (suggest don't filter using this)
+par(mfrow=c(1,1))
+hist(sp_gob$confidence)
 
-####
-####
-####
+# Prepare for export
+ssd_gob3 <- data.frame("OBJECTID"=ssd_gob$OBJECTID,"Latitude"=ssd_gob$latitude,"Longitude"=ssd_gob$longitude)
+out.ds <- left_join(data.frame(sp_gob), ssd_gob3, by = "OBJECTID")
 
-# Quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
-# For host community sampling for the Forced Displacement Survey
+str(sp_gob)
+str(data.frame(sp_gob))
+str(ssd_gob3)
 
-# GRID3 UNFPA layer:
-# https://data.grid3.org/maps/GRID3::grid3-south-sudan-gridded-population-estimates-version-2-0/about
-# Use this to estimate population density per enumeration area
+# Export
+write.csv(out.ds,"GOB enhanced dataset.csv",row.names=F)
 
+# END
