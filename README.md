@@ -17,9 +17,11 @@ Adds a tag for estimated building area to identify very large and small ones for
 # Possible elaborations
 Enhanced measure of proxmity of building objects to settlements (e.g. composite index including information on nearest 5 settlements rather than just closest)
 
+Test how useful a proxy the last detection date in the Google Open Buildings data is to priotise visual checking.
+
 Include the WFP road and path data to include distnace to nearest road/path https://data.humdata.org/dataset/south-sudan-road-network
 
-# Quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
+## Next step: quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
 GRID3 UNFPA layer:
 https://data.grid3.org/maps/GRID3::grid3-south-sudan-gridded-population-estimates-version-2-0/about
 
