@@ -7,6 +7,7 @@ library(tidyr)
 library(tmap)
 library(rgeos)
 library(dplyr)
+library(ggplot2)
 
 # SSD Google Open Buildings data (provided by UNHCR GIS team), re-format
 ssd_gob <- read.csv("building layer export.csv",T)[,1:7]
@@ -60,12 +61,10 @@ sp_gob$min_d_sett <- sett.names[apply(d.mat, 1, which.min)]
 # tm_basemap("OpenStreetMap") +
 #  tm_shape(sp_gob) + tm_dots(col = "min_d_sett", palette=rainbow(length(unique(sp_gob$min_d_sett)),alpha=0.5))
 
-# Minimum distance distribution
-par(mfrow=c(2,2))
-hist(sp_gob$min_d,main ="All",xlab="dist to nearest refugee settlement (m)")
-hist(subset(sp_gob,sp_gob$min_d>0)$min_d,main=">0m",xlab="dist to nearest refugee settlement (m)")
-hist(subset(sp_gob,sp_gob$min_d>1000)$min_d,main=">1000m",xlab="dist to nearest refugee settlement (m)") 
-hist(subset(sp_gob,sp_gob$min_d>10000)$min_d,main=">10000m",xlab="dist to nearest refugee settlement (m)") 
+# Minimum distance distribution of building objects outside refugee settlements
+sp_gob %>% filter(min_d > 0) %>%
+  ggplot() + geom_histogram(aes(x=min_d), binwidth = 1000, alpha = 0.6, colour = "black") + 
+  theme_bw() + xlab("Distance from camp (m)")
 
 # Buildings identified inside these refugee settlements
 table(sp_gob$inside_per)
@@ -74,11 +73,9 @@ table(sp_gob$inside_per)
 table(sp_gob$min_d_sett)
 
 # Estimated building area could be helpful at extremes
-par(mfrow=c(2,2))
-hist(sp_gob$area_in_meters,main ="All",xlab="Area (m)")
-hist(subset(sp_gob,sp_gob$area_in_meters<1000)$area_in_meters,main ="<1000",xlab="Area (m)")
-hist(subset(sp_gob,sp_gob$area_in_meters<100)$area_in_meters,main ="<100",xlab="Area (m)")
-hist(subset(sp_gob,sp_gob$area_in_meters<50)$area_in_meters,main ="<50",xlab="Area (m)")
+sp_gob %>% filter(area_in_meters <100) %>%
+ggplot() + geom_histogram(aes(x=area_in_meters), binwidth = 1, alpha = 0.6, colour = "black") + 
+  theme_bw() + xlab("Estimates area (m)")
 
 # Suggest tagging those greater than 44 and smaller than 8, not to exclude, but perhaps to prioritize for visual checking, this would highlights approx 0.05 and 0.95 percentiles
 q05 <- quantile(sp_gob$area_in_meters, probs = 0.05)[[1]]
