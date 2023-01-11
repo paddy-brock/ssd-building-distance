@@ -23,9 +23,9 @@ sp_gob <- st_as_sf(gob,coords=c("longitude","latitude")) %>%
   st_set_crs(4326) %>%  st_transform(20135) 
 
 # Check
-#tmap_mode("view")
-# tm_basemap("OpenStreetMap") +
-#  tm_shape(sp_gob) + tm_dots(col = "black")
+tmap_mode("view")
+ tm_basemap("OpenStreetMap") +
+  tm_shape(sp_gob) + tm_dots(col = "black")
 
 # UNHCR camp perimeters, project to match Google Open Buildings
 per <- st_read("ssd perimeters.shp")
@@ -42,8 +42,8 @@ sp_gob$inside_per <- ifelse((is.na(sp_gob$inside_per)==T), "outside",sp_gob$insi
 
 # Check
 table(sp_gob$inside_per)
-# tm_basemap("OpenStreetMap") +
-#  tm_shape(sp_gob) + tm_dots(col = "inside_per", palette=rainbow(length(unique(sp_gob$inside_per)),alpha=0.5))
+ tm_basemap("OpenStreetMap") +
+  tm_shape(sp_gob) + tm_dots(col = "inside_per", palette=rainbow(length(unique(sp_gob$inside_per)),alpha=0.5))
 
 # For those outside, distance to nearest perimeter, and identify which
 sp_gob_out <- subset(sp_gob, is.na(sp_gob$inside_per)==T)
@@ -57,9 +57,9 @@ sp_gob$min_d <- apply(d.mat, 1, min)
 sp_gob$min_d_sett <- sett.names[apply(d.mat, 1, which.min)]
 
 # Check
-#tmap_mode("view")
-# tm_basemap("OpenStreetMap") +
-#  tm_shape(sp_gob) + tm_dots(col = "min_d_sett", palette=rainbow(length(unique(sp_gob$min_d_sett)),alpha=0.5))
+tmap_mode("view")
+ tm_basemap("OpenStreetMap") +
+  tm_shape(sp_gob) + tm_dots(col = "min_d_sett", palette=rainbow(length(unique(sp_gob$min_d_sett)),alpha=0.5))
 
 # Minimum distance distribution of building objects outside refugee settlements
 sp_gob %>% filter(min_d > 0) %>%
