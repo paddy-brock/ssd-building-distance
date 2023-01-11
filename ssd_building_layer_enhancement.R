@@ -115,5 +115,3 @@ str(out.d)
 
 # Export
 write.csv(out.d,"SSD Unity Upper Nile Google Open Buildings enhanced.csv",row.names=F)
-
-# END
