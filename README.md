@@ -14,7 +14,7 @@ Assumption: have removed the IDP settlement Bentiu from these calculations, as i
 
 Adds a tag for estimated building area to identify very large and small ones for priority visual checking.
 
-# Possible elaborations
+## Possible elaborations
 Enhanced measure of proxmity of building objects to settlements (e.g. composite index including information on nearest 5 settlements rather than just closest)
 
 Test how useful a proxy the last detection date in the Google Open Buildings data is to priotise visual checking.
