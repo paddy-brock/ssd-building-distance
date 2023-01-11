@@ -6,3 +6,6 @@ To allow for stratified sampling of host community household by distance to near
 Tag building objects by in/out perimeters.
 
 Calculate distance for those outside to nearest perimeter (and tag which it is).
+
+Add a tag for estimated building area to identify very large and small ones for priority visual testing.
+
