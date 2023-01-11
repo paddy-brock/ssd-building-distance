@@ -52,10 +52,8 @@ sp_gob_min_d <- NA
 sp_gob_min_d_sett <- NA
 sett.names <- unique(sp_per$name)
 
-for (i in 1:length(d.mat[,1])){
-  sp_gob$min_d[i] <- min(d.mat[i,])
-  sp_gob$min_d_sett[i] <- sett.names[which(d.mat[i,]==min(d.mat[i,]))]
-}
+sp_gob$min_d <- apply(d.mat, 1, min)
+sp_gob$min_d_sett <- sett.names[apply(d.mat, 1, which.min)]
 
 # Check
 #tmap_mode("view")
@@ -87,11 +85,8 @@ q05 <- quantile(sp_gob$area_in_meters, probs = 0.05)[[1]]
 q95 <- quantile(sp_gob$area_in_meters, probs = 0.95)[[1]]
 
 sp_gob$building_size_percentile <- NA
-
-for(i in 1:length(sp_gob$area_in_meters)){
-  sp_gob$building_size_percentile[i] <-   ifelse(sp_gob$area_in_meters[i]<q05, "small",
-                                                 ifelse(sp_gob$area_in_meters[i]>q95, "large", "medium"))
-}
+sp_gob$building_size_percentile <-  ifelse(sp_gob$area_in_meters < q05, "small",
+                                           ifelse(sp_gob$area_in_meters > q95, "large", "medium"))
 
 # Check
 par(mfrow=c(1,1))
