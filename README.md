@@ -10,7 +10,7 @@ Area: Unity and Upper Nile states
 Tags building objects by whether inside or outside of UNHCR settlement perimeters.
 
 Calculates distance of building objects outside perimeters to the nearest perimeter (and tags which is the nearest perimeter).
-Assumption: have removed the IDP settlement Bentiu from these calculations, as it is an IDP settlement. NB that some of the building objects in south west Unity are closer to this settlement than to the refugee camps to the north east in Unity identified as their closest matches in theoutput dataset.
+Assumption: have removed the IDP settlement Bentiu from these calculations, as it is an IDP settlement. NB that some of the building objects in south west Unity are closer to this settlement than to the refugee camps to the north east in Unity identified as their closest matches in the output dataset.
 
 Adds a tag for estimated building area to identify very large and small ones for priority visual checking.
 
