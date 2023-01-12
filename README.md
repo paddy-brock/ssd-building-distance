@@ -14,7 +14,7 @@ Assumption: have removed the IDP settlement Bentiu from these calculations, as i
 
 Adds a tag for estimated building area to identify very large and small ones for priority visual checking.
 
-## Necessary additionas
+## Necessary additions
 
 Inclusion of refugee households in other states
 
