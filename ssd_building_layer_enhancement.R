@@ -55,6 +55,7 @@ sett.names <- unique(sp_per$name)
 
 sp_gob$min_d <- apply(d.mat, 1, min)
 sp_gob$min_d_sett <- sett.names[apply(d.mat, 1, which.min)]
+sp_gob$min_d_sett <- ifelse(sp_gob$inside_per!="outside","inside",sp_gob$min_d_sett)
 
 # Check
 tmap_mode("view")
