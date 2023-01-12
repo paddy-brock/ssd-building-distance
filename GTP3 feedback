@@ -24,7 +24,7 @@ Use the dplyr::group_by() and dplyr::summarize() to calculate the area of buildi
 
 
 ###
-### translation to python
+### starting suggestion for translation to python
 ###
 
 import pandas as pd
