@@ -28,13 +28,23 @@ https://data.grid3.org/maps/GRID3::grid3-south-sudan-gridded-population-estimate
 Use this to compare population density estimates per enumeration area
 
 ### GPT3 feedback for making the code more robust, efficient and reproducible
+
 Clearly documenting the code with comments explaining what each section of the code is doing and why.
+
 Use more meaningful variable names that reflect the data they hold.
+
 Use the readr::read_csv() function instead of read.csv() for reading in the csv file, as it is more efficient and can handle large datasets.
+
 Use the sf::st_crs() function to set the Coordinate Reference System (CRS) of the data, rather than hardcoding the CRS in the code.
+
 Use the dplyr::filter() and dplyr::select() function to subset the data rather than subset() function.
+
 Use the tmap_mode("plot") to generate the final maps, rather than tmap_mode("view").
+
 Use the ggplot2::geom_density() instead of ggplot2::geom_histogram() to show the distribution of distance from camp.
+
 Use library(data.table) instead of data.frame() when creating data frame of distance matrix, to make it more efficient.
+
 Use the stringr::str_to_title() function to format the names of the settlement for better readability.
+
 Use the dplyr::group_by() and dplyr::summarize() to calculate the area of buildings.
