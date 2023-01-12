@@ -17,7 +17,7 @@ Adds a tag for estimated building area to identify very large and small ones for
 ## Possible elaborations
 Enhanced measure of proxmity of building objects to settlements (e.g. composite index including information on nearest 5 settlements rather than just closest)
 
-Test how useful a proxy the last detection date in the Google Open Buildings data is to priotise visual checking.
+Test how useful a proxy the last detection date in the Google Open Buildings data is to prioritise visual checking.
 
 Include the WFP road and path data to include distnace to nearest road/path https://data.humdata.org/dataset/south-sudan-road-network
 
