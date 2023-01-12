@@ -19,7 +19,7 @@ Enhanced measure of proxmity of building objects to settlements (e.g. composite 
 
 Test how useful a proxy the last detection date in the Google Open Buildings data is to prioritise visual checking.
 
-Include the WFP road and path data to include distnace to nearest road/path https://data.humdata.org/dataset/south-sudan-road-network
+Integrate the WFP road and path data to estimate distnace to nearest road/path https://data.humdata.org/dataset/south-sudan-road-network
 
 ## Next step: quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
 GRID3 UNFPA layer:
