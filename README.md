@@ -27,7 +27,9 @@ Test how useful a proxy the last detection date in the Google Open Buildings dat
 
 Integrate the WFP road and path data to estimate distnace to nearest road/path https://data.humdata.org/dataset/south-sudan-road-network
 
-## Next step: quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
+## Future complement
+
+Quality assuring the enumeration data from the South Sudan National Bureau of Statistics (pending data from NBS)
 GRID3 UNFPA layer:
 https://data.grid3.org/maps/GRID3::grid3-south-sudan-gridded-population-estimates-version-2-0/about
 
