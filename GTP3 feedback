@@ -1,0 +1,51 @@
+###
+### translation to python
+###
+
+import pandas as pd
+import geopandas as gpd
+from shapely.geometry import Point
+import matplotlib.pyplot as plt
+
+# SSD Google Open Buildings data (provided by UNHCR GIS team), re-format
+ssd_gob = pd.read_csv("building layer export.csv")[['OBJECTID', 'latitude', 'longitude', 'last_detection_date']]
+ssd_gob['date'] = pd.to_datetime(ssd_gob['last_detection_date'], format='%Y-%m')
+
+# Remove Magwi and Torit (as these are areas where returnees will be sampled)
+ssd_gob = ssd_gob[ssd_gob['latitude'] > 7]
+ssd_gob.dropna(inplace=True)
+
+# Project the GOB data as spatial object
+ssd_gob['geometry'] = ssd_gob.apply(lambda row: Point(row['longitude'], row['latitude']), axis=1)
+sp_gob = gpd.GeoDataFrame(ssd_gob, geometry='geometry', crs={'init': 'epsg:4326'})
+sp_gob = sp_gob.to_crs(epsg=20135)
+
+# Check
+sp_gob.plot(color='black')
+
+# UNHCR camp perimeters, project to match Google Open Buildings
+per = gpd.read_file("ssd perimeters.shp")
+per = per.to_crs(epsg=20135)
+
+# Remove Benitu POC IDP settlement
+per = per[per['name'] != "Bentiu POC"]
+
+# Tag buildings as in or out of perimeters (including identifying which when inside)
+sp_gob['inside_per'] = 'outside'
+sp_gob = gpd.sjoin(sp_gob, per, how='left', op='within')
+sp_gob['inside_per'].fillna('outside', inplace=True)
+
+# Check
+sp_gob.plot(column='inside_per', cmap='rainbow', alpha=0.5)
+
+# For those outside, distance to nearest perimeter, and identify which
+sp_gob_out = sp_gob[sp_gob['inside_per'] == 'outside']
+sp_gob_out['min_d'] = sp_gob_out.distance(per.unary_union)
+sp_gob_out.sort_values(by='min_d', inplace=True)
+sp_gob_out['min_d_sett'] = per.loc[sp_gob_out.nearest_points(per)[1]]['name'].values
+
+# Check
+sp_gob_out.plot(column='min_d_sett', cmap='rainbow', alpha=0.5)
+
+# Minimum distance distribution of building objects outside refugee settlements
+plt.hist(sp_gob_out[sp_gob_out['min_d'] > 0]['min_d'], bins=1000, color='black', alpha=0.6)
