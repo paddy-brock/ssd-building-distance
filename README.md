@@ -1,11 +1,11 @@
 # ssd-building-distance
 Enhancing the Google Open Buildings layer for South Sudan for host community and refugee sampling for the UNHCR Forced Displacement Survey
 
-Area: Unity and Upper Nile states
-
 Combine Google Open Buildings data with UNHCR settlement perimeter data to:
-- identify building objects (possible housholds) in camps to support refugee sampling
+- identify building objects (possible households) in camps to support refugee sampling
 - allow for stratified sampling of building objects by distance to nearest refugee camp
+
+Area: Unity and Upper Nile states
 
 Tags building objects by whether inside or outside of UNHCR settlement perimeters.
 
