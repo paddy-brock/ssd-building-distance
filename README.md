@@ -14,6 +14,12 @@ Assumption: have removed the IDP settlement Bentiu from these calculations, as i
 
 Adds a tag for estimated building area to identify very large and small ones for priority visual checking.
 
+## Necessary additionas
+
+Inclusion of refugee households in other states
+
+Once sample is drawn, identify and plot nearest other google open buildings objects for calculation of sample weights
+
 ## Possible elaborations
 Enhanced measure of proxmity of building objects to settlements (e.g. composite index including information on nearest 5 settlements rather than just closest)
 
