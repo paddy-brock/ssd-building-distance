@@ -1,4 +1,4 @@
-# Enhancing the Google Open Buildings layer for South Sudan for host community and refugee sampling for the UNHCR Forced Displacement Survey
+# Enhancing the Google Open Buildings layer for South Sudan for host community and refugee sampling for the UNHCR Forced Displacement Survey - UNITY and UPPER NILE - REFUGEES and HOSTS
 
 setwd("C:/Users/BROCK/OneDrive - UNHCR/Documents/South Sudan Scoping/SSD-Building-Distance")
 library(lubridate)
@@ -33,7 +33,7 @@ st_crs(per)
 sp.per1 <- per %>% st_transform(20135)
 
 # Remove Benitu POC IDP settlement
-sp.per <- subset(sp.per1,sp_per1$name!="Bentiu POC")
+sp.per <- subset(sp.per1,sp.per1$name!="Bentiu POC")
 
 # Tag buildings as in or out of perimeters (including identifying which when inside)
 in.p <- st_join(sp.gob,sp.per)
