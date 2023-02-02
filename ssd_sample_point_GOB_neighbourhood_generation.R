@@ -11,6 +11,7 @@ library(rgeos)
 library(dplyr)
 library(ggplot2)
 library(readr)
+library(ggmap)
 
 gob.en. <- readr::read_csv("SSD Unity Upper Nile Refugees and Hosts Google Open Buildings enhanced.csv",T)
 
@@ -43,6 +44,10 @@ tmap_mode("view")
 tm_basemap("OpenStreetMap") +
   tm_shape(nbh)  + tm_dots(col = "sam.nei", palette=rainbow(length(unique(nbh$sam.nei)),alpha=0.5))
 
-# For each sample, output neighbour dataset - way to create child tables?
+tm_basemap("Esri.WorldImagery") +
+  tm_shape(nbh)  + tm_dots(col = "sam.nei", palette=rainbow(length(unique(nbh$sam.nei)),alpha=0.5))
+
+# For each sample, output neighbour dataset - best format?
 
 # Host communities, example sample of 3000 on OBJECTID
+# Repeat for outside
