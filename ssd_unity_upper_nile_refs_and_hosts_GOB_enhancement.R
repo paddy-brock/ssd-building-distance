@@ -22,10 +22,6 @@ gob <-na.omit(ssd.gob2)
 sp.gob <- st_as_sf(gob,coords=c("longitude","latitude")) %>% 
   st_set_crs(4326) %>%  st_transform(20135) 
 
-#
-##
-### re-plot with correct projection
-
 # Check
 tmap_mode("view")
  tm_basemap("OpenStreetMap") +
@@ -97,9 +93,7 @@ boxplot(log(sp.gob$area_in_meters)~sp.gob$building_size_percentile)
 # Google Buildings confidence measure doesn't look useful in this context, based on some random sample visual inspection, suggest don't filter/prioritize using this
 hist(sp.gob$confidence)
 
-####
-#### ADD admin categories for each building object
-####  
+# Add admin categories for each building object
 
 ad1 <- st_read("ssd admin 1.shp")
 st_crs(ad1)
@@ -119,16 +113,14 @@ ad3 <- ad3 %>% st_transform(20135)
 in.ad3 <- st_join(sp.gob,ad3)
 sp.gob$adm3 <- in.ad3$ADM3_EN
 
-####
-### Count the building objects for hosts in Pariang and Maban
-####
+# Count the building objects for hosts in Pariang and Maban
 
 table(sp.gob$adm2)
 table(subset(sp.gob,sp.gob$inside_per=="outside")$adm2)
 table(subset(sp.gob,sp.gob$inside_per!="outside")$adm2)
 table(sp.gob$inside_per)
 
-# Prepare for export
+# Prepare for export ... FIX ... columns different
 ssd.gob3 <- data.frame("OBJECTID"=ssd.gob$OBJECTID,"latitude"=ssd.gob$latitude,"longitude"=ssd.gob$longitude)
 out.ds <- left_join(data.frame(sp.gob), ssd.gob3, by = "OBJECTID")
 
@@ -137,8 +129,8 @@ str(data.frame(sp.gob))
 str(ssd.gob3)
 names(out.ds)[6] <- "reformatted_date"
 
-# move geometry to last
-out.d <- out.ds[, c(1:6,8:13,7)]
+# put geometry at end
+out.d <- out.ds[, c(1:6,8:16,7)]
 str(out.d)
 
 # Export
