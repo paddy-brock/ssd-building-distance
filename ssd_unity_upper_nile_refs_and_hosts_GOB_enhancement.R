@@ -22,12 +22,16 @@ gob <-na.omit(ssd.gob2)
 sp.gob <- st_as_sf(gob,coords=c("longitude","latitude")) %>% 
   st_set_crs(4326) %>%  st_transform(20135) 
 
+#
+##
+### re-plot with correct projection
+
 # Check
 tmap_mode("view")
  tm_basemap("OpenStreetMap") +
   tm_shape(sp.gob) + tm_dots(col = "black")
 
-# UNHCR camp perimeters, project to match Google Open Buildings
+# UNHCR camp perimeters, (provided by UNHCR GIS team), project to match Google Open Buildings
 per <- st_read("ssd perimeters.shp")
 st_crs(per)
 sp.per1 <- per %>% st_transform(20135)
@@ -92,6 +96,37 @@ boxplot(log(sp.gob$area_in_meters)~sp.gob$building_size_percentile)
 
 # Google Buildings confidence measure doesn't look useful in this context, based on some random sample visual inspection, suggest don't filter/prioritize using this
 hist(sp.gob$confidence)
+
+####
+#### ADD admin categories for each building object
+####  
+
+ad1 <- st_read("ssd admin 1.shp")
+st_crs(ad1)
+ad1 <- ad1 %>% st_transform(20135)
+in.ad1 <- st_join(sp.gob,ad1)
+sp.gob$adm1 <- in.ad1$ADM1_EN
+
+ad2 <- st_read("ssd admin 2.shp")
+st_crs(ad2)
+ad2 <- ad2 %>% st_transform(20135)
+in.ad2 <- st_join(sp.gob,ad2)
+sp.gob$adm2 <- in.ad2$ADM2_EN
+
+ad3 <- st_read("ssd admin 3.shp")
+st_crs(ad3)
+ad3 <- ad3 %>% st_transform(20135)
+in.ad3 <- st_join(sp.gob,ad3)
+sp.gob$adm3 <- in.ad3$ADM3_EN
+
+####
+### Count the building objects for hosts in Pariang and Maban
+####
+
+table(sp.gob$adm2)
+table(subset(sp.gob,sp.gob$inside_per=="outside")$adm2)
+table(subset(sp.gob,sp.gob$inside_per!="outside")$adm2)
+table(sp.gob$inside_per)
 
 # Prepare for export
 ssd.gob3 <- data.frame("OBJECTID"=ssd.gob$OBJECTID,"latitude"=ssd.gob$latitude,"longitude"=ssd.gob$longitude)

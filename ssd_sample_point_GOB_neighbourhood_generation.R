@@ -16,7 +16,7 @@ library(ggmap)
 gob.en. <- readr::read_csv("SSD Unity Upper Nile Refugees and Hosts Google Open Buildings enhanced.csv",T)
 
 gob.en <- st_as_sf(gob.en.,coords=c("longitude","latitude")) %>% 
-  st_set_crs(4326) %>%  st_transform(20135) 
+  st_set_crs(4326) %>% st_transform(20135) 
 
 # Refugees, example sample of n on OBJECTID
 n <- 3000
@@ -29,7 +29,7 @@ table(ref.en$sample)
 
 # For each sampled building object inside a refugee camp perimeter, identify all those that are within threshold.m meters also within the perimeter
 
-threshold.m <- 20
+threshold.m <- 100
 
 i <- 1
   tds <- subset(ref.en,ref.en$OBJECTID==refsam[i])
@@ -41,9 +41,9 @@ i <- 1
   
 # Check
 tmap_mode("view")
-tm_basemap("OpenStreetMap") +
+tm_basemap("OpenStreetMap") + 
   tm_shape(nbh)  + tm_dots(col = "sam.nei", palette=rainbow(length(unique(nbh$sam.nei)),alpha=0.5))
-
+  
 tm_basemap("Esri.WorldImagery") +
   tm_shape(nbh)  + tm_dots(col = "sam.nei", palette=rainbow(length(unique(nbh$sam.nei)),alpha=0.5))
 
